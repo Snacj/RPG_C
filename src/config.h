@@ -1,0 +1,18 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define WINDOW_WIDTH 640 * 2
+#define WINDOW_HEIGHT 360 * 2
+
+#define FRAMERATE 60
+#define FRAMEDELAY (1000 / FRAMERATE)
+
+#define SPRITE_SIZE 16
+#define TILE_SIZE 48
+
+#define CEIL_DIV(a, b) (((a) + (b) - 1) / (b))
+
+#define COLS CEIL_DIV(WINDOW_WIDTH, TILE_SIZE) 
+#define ROWS CEIL_DIV(WINDOW_HEIGHT, TILE_SIZE)
+
+#endif // CONFIG_H
