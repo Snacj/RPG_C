@@ -8,7 +8,7 @@ void playerInit(Player* player) {
     player->rect.w = TILE_SIZE;
     player->rect.h = TILE_SIZE;
     player->speed = 5;
-    player->texture = gPlayerTexture;
+    player->texture = *(SDL_Texture**)vector_get(&gTextures, 2);
 }
 
 void playerUpdate(Player* player) {
@@ -17,10 +17,10 @@ void playerUpdate(Player* player) {
     float dx = 0;
     float dy = 0;
 
-    if (keystates[SDL_SCANCODE_UP]) dy -= 1.0f;
-    if (keystates[SDL_SCANCODE_DOWN]) dy += 1.0f;
-    if (keystates[SDL_SCANCODE_LEFT]) dx -= 1.0f;
-    if (keystates[SDL_SCANCODE_RIGHT]) dx += 1.0f;
+    if (keystates[SDL_SCANCODE_W]) dy -= 1.0f;
+    if (keystates[SDL_SCANCODE_S]) dy += 1.0f;
+    if (keystates[SDL_SCANCODE_A]) dx -= 1.0f;
+    if (keystates[SDL_SCANCODE_D]) dx += 1.0f;
 
     // Normalize manually for diagonal movement
     if (dx != 0 && dy != 0) {

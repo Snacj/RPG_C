@@ -1,10 +1,13 @@
 #include "assets.h"
+#include "util.h"
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 
 SDL_Texture* gTexture = NULL;
 SDL_Texture* gPlainGrassTexture = NULL;
 SDL_Texture* gPlayerTexture = NULL;
+
+Vector gTextures;
 
 static SDL_Texture* loadTexture(const char* path, SDL_Renderer* renderer) {
     SDL_Surface* loadedSurface = IMG_Load(path);
@@ -17,34 +20,47 @@ static SDL_Texture* loadTexture(const char* path, SDL_Renderer* renderer) {
         printf("Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError());
     }
     SDL_FreeSurface(loadedSurface);
+
+    if (!texture) {
+        printf("Failed to create texture from %s! SDL Error: %s\n", path, SDL_GetError());
+        return NULL;
+    }
+
+    vector_push_back(&gTextures, &texture);
+
     return texture;
 }
 
 int loadAssets(SDL_Renderer* renderer) {
-    gTexture = loadTexture("assets/sprites/grass.png", renderer);
-    gPlainGrassTexture = loadTexture("assets/sprites/testing.png", renderer);
-    gPlayerTexture = loadTexture("assets/sprites/player.png", renderer);
-    if (!gTexture || !gPlainGrassTexture) {
-        printf("Failed to load texture image!\n");
-        return 0;
+    vector_init(&gTextures, sizeof(SDL_Texture*));
+
+    TextureAsset assets[] = {
+        { "grass",       "assets/sprites/grass.png"},
+        { "plain_grass", "assets/sprites/testing.png"},
+        { "player",      "assets/sprites/player.png"}
+    };
+
+    size_t numAssets = sizeof(assets) / sizeof(assets[0]);
+
+    for (size_t i = 0; i < numAssets; i++) {
+        SDL_Texture *tex = loadTexture(assets[i].path, renderer);
+        if (!tex) {
+            printf("Failed to load asset: %s\n", assets[i].path);
+            return 0;
+        }
     }
+
     return 1;
 }
 
+
 void freeAssets() {
-    if (gTexture) {
-        SDL_DestroyTexture(gTexture);
-        gTexture = NULL;
+    for (size_t i = 0; i < gTextures.size; i++) {
+        SDL_Texture* texture = *(SDL_Texture**)vector_get(&gTextures, i);
+        if (texture) {
+            SDL_DestroyTexture(texture);
+        }
     }
-
-    if (gPlainGrassTexture) {
-        SDL_DestroyTexture(gPlainGrassTexture);
-        gPlainGrassTexture = NULL;
-    }
-
-    if (gPlayerTexture) {
-        SDL_DestroyTexture(gPlayerTexture);
-        gPlayerTexture = NULL;
-    }
+    vector_free(&gTextures);
 }
 

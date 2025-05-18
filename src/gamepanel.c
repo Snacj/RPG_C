@@ -2,6 +2,7 @@
 #include "assets.h"
 #include "config.h"
 #include "player.h"
+#include "util.h"
 
 #define FRAMERATE 60
 #define FRAMEDELAY (1000 / FRAMERATE)
@@ -23,10 +24,11 @@ static int update(void) {
 
 static void draw(SDL_Renderer* renderer) {
     SDL_RenderClear(renderer);
+    SDL_Texture* texture = *(SDL_Texture**)vector_get(&gTextures, 0);
     for(int i = 0; i < COLS; i++) {
         for (int j = 0; j < ROWS; j++) {
             SDL_Rect destRect = {i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
-            SDL_RenderCopy(renderer, gPlainGrassTexture, NULL, &destRect);
+            SDL_RenderCopy(renderer, texture, NULL, &destRect);
         }
     }
     playerDraw(&player, renderer);
