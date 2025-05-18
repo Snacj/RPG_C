@@ -8,7 +8,8 @@
 #define FRAMEDELAY (1000 / FRAMERATE)
 
 #define SPRITE_SIZE 16
-#define TILE_SIZE 48
+#define SPRITE_SCALE_VALUE 4
+#define TILE_SIZE SPRITE_SIZE * SPRITE_SCALE_VALUE
 
 #define CEIL_DIV(a, b) (((a) + (b) - 1) / (b))
 

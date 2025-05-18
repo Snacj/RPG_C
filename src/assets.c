@@ -37,7 +37,8 @@ int loadAssets(SDL_Renderer* renderer) {
     TextureAsset assets[] = {
         { "grass",       "assets/sprites/grass.png"},
         { "plain_grass", "assets/sprites/testing.png"},
-        { "player",      "assets/sprites/player.png"}
+        { "stone",      "assets/sprites/stone.png"},
+        { "player",      "assets/sprites/player.png"},
     };
 
     size_t numAssets = sizeof(assets) / sizeof(assets[0]);
