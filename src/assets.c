@@ -1,4 +1,5 @@
 /*
+* assets.c
 *
 * Credits for the Assets:
 * https://snoblin.itch.io/pixel-rpg-skeleton-free
@@ -13,16 +14,24 @@
 Vector gTextures;
 Vector gPlayerTextures;
 
+/**
+* @brief load a texture from a file
+* @param const char* path, SDL_Renderer* renderer, Vector* vecTextures
+* @return SDL_Texture*
+*/
 static SDL_Texture* loadTexture(const char* path, SDL_Renderer* renderer, Vector* vecTextures) {
+    // Load image at specified path
     SDL_Surface* loadedSurface = IMG_Load(path);
     if (!loadedSurface) {
         printf("Unable to load image %s! SDL_image Error: %s\n", path, IMG_GetError());
         return NULL;
     }
+    // Create texture from surface pixels
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
     if (!texture) {
         printf("Unable to create texture from %s! SDL Error: %s\n", path, SDL_GetError());
     }
+    // Get rid of the old loaded surface
     SDL_FreeSurface(loadedSurface);
 
     if (!texture) {
@@ -30,23 +39,34 @@ static SDL_Texture* loadTexture(const char* path, SDL_Renderer* renderer, Vector
         return NULL;
     }
 
+    // Add the texture to the vector
     vector_push_back(vecTextures, &texture);
 
+    // return the texture
     return texture;
 }
 
+/**
+* @brief load all the assets
+* @param SDL_Renderer* renderer
+* @return int
+*/
 int loadAssets(SDL_Renderer* renderer) {
+    // Initialize the vectors
     vector_init(&gTextures, sizeof(SDL_Texture*));
     vector_init(&gPlayerTextures, sizeof(SDL_Texture*));
 
+    // Name and path of the assets
     TextureAsset assets[] = {
         { "grass",          "assets/sprites/grass.png"},
         { "plain_grass",    "assets/sprites/testing.png"},
         { "stone",          "assets/sprites/stone.png"},
     };
 
+    // Array size
     size_t numAssets = sizeof(assets) / sizeof(assets[0]);
 
+    // Load the assets from the array
     for (size_t i = 0; i < numAssets; i++) {
         SDL_Texture *tex = loadTexture(assets[i].path, renderer, &gTextures);
         if (!tex) {
@@ -54,6 +74,8 @@ int loadAssets(SDL_Renderer* renderer) {
             return 0;
         }
     }
+
+    // Extra array and vector for the player assets
     TextureAsset playerAssets[] = {
         { "player_down_idle_1",         "assets/sprites/player_down_idle_1.png"},
         { "player_down_idle_2",         "assets/sprites/player_down_idle_2.png"},
@@ -86,8 +108,13 @@ int loadAssets(SDL_Renderer* renderer) {
     return 1;
 }
 
-
+/**
+* @brief free all the assets
+* @param void
+* @return void
+*/
 void freeAssets() {
+    // Free all the textures
     for (size_t i = 0; i < gTextures.size; i++) {
         SDL_Texture* texture = *(SDL_Texture**)vector_get(&gTextures, i);
         if (texture) {

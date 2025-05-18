@@ -1,3 +1,9 @@
+/*
+ * player.c
+ *
+ * This file handles the player
+ *
+ */
 #include "player.h"
 #include "config.h"
 #include "assets.h"
@@ -12,6 +18,11 @@ enum playerDirection {
     RIGHT = 4
 };
 
+/**
+* @brief initialize the player
+* @param player the player to initialize
+* @return void
+*/
 void playerInit(Player* player) {
     player->rect.x = 100;
     player->rect.y = 100;
@@ -24,7 +35,7 @@ void playerInit(Player* player) {
     player->solidArea.x = player->rect.x + (player->rect.w - player->solidArea.w) / 2;
     player->solidArea.y = player->rect.y + player->rect.h - player->solidArea.h;
 
-    player->speed = 5;
+    player->speed = PLAYER_SPEED;
     player->direction = DOWN;
     player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 0);
 
@@ -36,9 +47,15 @@ void playerInit(Player* player) {
     player->debug = 0;
 }
 
+/**
+* @brief update the player
+* @param player the player to update
+* @return void
+*/
 void playerUpdate(Player* player) {
     const Uint8* keystates = SDL_GetKeyboardState(NULL);
 
+    // Handles animation
     player->animationTimer++;
     if (player->animationTimer >= 15) {
         player->animationTimer = 0;
@@ -49,9 +66,10 @@ void playerUpdate(Player* player) {
     float dx = 0;
     float dy = 0;
 
+    // Handle Keyboard input
     if (keystates[SDL_SCANCODE_W]) {
         player->direction = UP;
-        dy -= 1.0f;
+        dy = -1.0f;
         if (player->currentAnimationFrame == 0) {
             player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 6);
         } else {
@@ -60,7 +78,7 @@ void playerUpdate(Player* player) {
     }
     if (keystates[SDL_SCANCODE_S]) {
         player->direction = DOWN;
-        dy += 1.0f;
+        dy = 1.0f;
         if (player->currentAnimationFrame == 0) {
             player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 2);
         } else {
@@ -69,7 +87,7 @@ void playerUpdate(Player* player) {
     }
     if (keystates[SDL_SCANCODE_A]) {
         player->direction = LEFT;
-        dx -= 1.0f;
+        dx = -1.0f;
         if (player->currentAnimationFrame == 0) {
             player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 14);
         } else {
@@ -78,7 +96,7 @@ void playerUpdate(Player* player) {
     }
     if (keystates[SDL_SCANCODE_D]) {
         player->direction = RIGHT;
-        dx += 1.0f;
+        dx = 1.0f;
         if (player->currentAnimationFrame == 0) {
             player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 10);
         } else {
@@ -126,6 +144,7 @@ void playerUpdate(Player* player) {
         dy *= 0.7071f;
     }
 
+    // Check for collisions with the stone
     SDL_Rect futureRect = player->rect;
     futureRect.x += dx * player->speed;
     SDL_Rect futureSolid = {
@@ -154,9 +173,15 @@ void playerUpdate(Player* player) {
 }
 
 
+/**
+* @brief draw the player
+* @param player the player to draw, SDL_Renderer*
+* @return void
+*/
 void playerDraw(Player* player, SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
     SDL_RenderCopy(renderer, player->texture, NULL, &player->rect);
+    // DEBUG
     if (player->debug) {
         SDL_RenderDrawRect(renderer, &player->solidArea);
     }

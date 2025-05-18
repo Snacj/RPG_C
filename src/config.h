@@ -11,6 +11,8 @@
 #define SPRITE_SCALE_VALUE 3
 #define TILE_SIZE SPRITE_SIZE * SPRITE_SCALE_VALUE
 
+#define PLAYER_SPEED 1 + SPRITE_SCALE_VALUE
+
 #define CEIL_DIV(a, b) (((a) + (b) - 1) / (b))
 
 #define COLS CEIL_DIV(WINDOW_WIDTH, TILE_SIZE) 

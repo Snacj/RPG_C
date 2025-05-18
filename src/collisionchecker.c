@@ -1,8 +1,13 @@
+/*
+* collisionchecker.c
+*
+* This file is checking for collisions
+*
+*/
 #include "collisionchecker.h"
 #include "player.h"
 
 #include <SDL2/SDL.h>
-#include <stdio.h>
 
 extern Player player;
 
@@ -14,10 +19,15 @@ enum {
   COLLISION_RIGHT = 4
 };
 
+/**
+* @brief check for collision between two rectangles
+* @param a the first rectangle, b the second rectangle
+* @return int
+*/
 int checkCollision(SDL_Rect a, SDL_Rect b) {
     if (a.x + a.w <= b.x || a.x >= b.x + b.w || a.y + a.h <= b.y ||
         a.y >= b.y + b.h) {
-    printf("No collision\n");
+    // printf("No collision\n");
     return COLLISION_NONE;
     }
 
@@ -31,18 +41,18 @@ int checkCollision(SDL_Rect a, SDL_Rect b) {
 
     if (minX < minY) {
         if (dxLeft < dxRight) {
-            printf("Collision on RIGHT\n");
+            // printf("Collision on RIGHT\n");
             return COLLISION_RIGHT;
         } else {
-            printf("Collision on LEFT\n");
+            // printf("Collision on LEFT\n");
             return COLLISION_LEFT;
         }
         } else {
         if (dyTop < dyBottom) {
-            printf("Collision on BOTTOM\n");
+            // printf("Collision on BOTTOM\n");
             return COLLISION_BOTTOM;
         } else {
-            printf("Collision on TOP\n");
+            // printf("Collision on TOP\n");
             return COLLISION_TOP;
         }
     }
