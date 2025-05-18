@@ -5,6 +5,7 @@
 
 extern SDL_Texture* gTexture;
 extern SDL_Texture* gPlainGrassTexture;
+extern SDL_Texture* gPlayerTexture;
 
 int loadAssets(SDL_Renderer* renderer);
 void freeAssets();

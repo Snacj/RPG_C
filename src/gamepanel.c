@@ -3,6 +3,17 @@
 #include "config.h"
 #include "player.h"
 
+#define FRAMERATE 60
+#define FRAMEDELAY (1000 / FRAMERATE)
+
+#define SPRITE_SIZE 16
+#define TILE_SIZE 48
+
+#define CEIL_DIV(a, b) (((a) + (b) - 1) / (b))
+
+#define COLS CEIL_DIV(WINDOW_WIDTH, TILE_SIZE) 
+#define ROWS CEIL_DIV(WINDOW_HEIGHT, TILE_SIZE)
+
 static Player player;
 
 static int update(void) {
@@ -34,9 +45,9 @@ void gamePanelLoop(SDL_Window* window, SDL_Renderer* renderer) {
             if (e.type == SDL_QUIT) {
                 quit = 1;
             }
-            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
+            if (e.key.keysym.sym == SDLK_ESCAPE) {
                 quit = 1;
-            }
+            } 
         }
 
         update();

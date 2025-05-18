@@ -1,5 +1,6 @@
 #include "player.h"
 #include "config.h"
+#include "assets.h"
 
 void playerInit(Player* player) {
     player->rect.x = 100;
@@ -7,6 +8,7 @@ void playerInit(Player* player) {
     player->rect.w = TILE_SIZE;
     player->rect.h = TILE_SIZE;
     player->speed = 5;
+    player->texture = gPlayerTexture;
 }
 
 void playerUpdate(Player* player) {
@@ -33,5 +35,5 @@ void playerUpdate(Player* player) {
 
 void playerDraw(Player* player, SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-    SDL_RenderFillRect(renderer, &player->rect);
+    SDL_RenderCopy(renderer, player->texture, NULL, &player->rect);
 }

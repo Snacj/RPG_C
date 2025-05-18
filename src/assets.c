@@ -4,6 +4,7 @@
 
 SDL_Texture* gTexture = NULL;
 SDL_Texture* gPlainGrassTexture = NULL;
+SDL_Texture* gPlayerTexture = NULL;
 
 static SDL_Texture* loadTexture(const char* path, SDL_Renderer* renderer) {
     SDL_Surface* loadedSurface = IMG_Load(path);
@@ -22,6 +23,7 @@ static SDL_Texture* loadTexture(const char* path, SDL_Renderer* renderer) {
 int loadAssets(SDL_Renderer* renderer) {
     gTexture = loadTexture("assets/sprites/grass.png", renderer);
     gPlainGrassTexture = loadTexture("assets/sprites/testing.png", renderer);
+    gPlayerTexture = loadTexture("assets/sprites/player.png", renderer);
     if (!gTexture || !gPlainGrassTexture) {
         printf("Failed to load texture image!\n");
         return 0;
@@ -38,6 +40,11 @@ void freeAssets() {
     if (gPlainGrassTexture) {
         SDL_DestroyTexture(gPlainGrassTexture);
         gPlainGrassTexture = NULL;
+    }
+
+    if (gPlayerTexture) {
+        SDL_DestroyTexture(gPlayerTexture);
+        gPlayerTexture = NULL;
     }
 }
 
