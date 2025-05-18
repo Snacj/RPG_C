@@ -3,6 +3,7 @@
 #include "util.h"
 
 extern Vector gTextures;
+extern Vector gPlayerTextures;
 
 typedef struct {
     const char* name;

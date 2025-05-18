@@ -9,6 +9,10 @@ typedef struct {
     SDL_Texture* texture;
     int speed;
     int direction;
+    int animationTimer;
+    int currentAnimationFrame;
+    int idle;
+    int debug;
 
 } Player;
 

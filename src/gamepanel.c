@@ -3,7 +3,6 @@
 #include "config.h"
 #include "player.h"
 #include "util.h"
-#include "collisionchecker.h"
 
 #define FRAMERATE 60
 #define FRAMEDELAY (1000 / FRAMERATE)

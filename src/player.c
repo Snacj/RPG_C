@@ -18,19 +18,33 @@ void playerInit(Player* player) {
     player->rect.w = TILE_SIZE;
     player->rect.h = TILE_SIZE;
 
-    player->solidArea.w = 32;
-    player->solidArea.h = 32;
+    player->solidArea.w = TILE_SIZE / 2;
+    player->solidArea.h = TILE_SIZE / 2;
 
     player->solidArea.x = player->rect.x + (player->rect.w - player->solidArea.w) / 2;
     player->solidArea.y = player->rect.y + player->rect.h - player->solidArea.h;
 
     player->speed = 5;
     player->direction = DOWN;
-    player->texture = *(SDL_Texture**)vector_get(&gTextures, 3);
+    player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 0);
+
+    player->animationTimer = 0;
+    player->currentAnimationFrame = 0;
+    player->idle = 1;
+
+    // DEBUG default false
+    player->debug = 0;
 }
 
 void playerUpdate(Player* player) {
     const Uint8* keystates = SDL_GetKeyboardState(NULL);
+
+    player->animationTimer++;
+    if (player->animationTimer >= 15) {
+        player->animationTimer = 0;
+        player->currentAnimationFrame = (player->currentAnimationFrame + 1) % 2;
+    }
+
 
     float dx = 0;
     float dy = 0;
@@ -38,18 +52,72 @@ void playerUpdate(Player* player) {
     if (keystates[SDL_SCANCODE_W]) {
         player->direction = UP;
         dy -= 1.0f;
+        if (player->currentAnimationFrame == 0) {
+            player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 6);
+        } else {
+            player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 7);
+        }
     }
     if (keystates[SDL_SCANCODE_S]) {
         player->direction = DOWN;
         dy += 1.0f;
+        if (player->currentAnimationFrame == 0) {
+            player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 2);
+        } else {
+            player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 3);
+        }
     }
     if (keystates[SDL_SCANCODE_A]) {
         player->direction = LEFT;
         dx -= 1.0f;
+        if (player->currentAnimationFrame == 0) {
+            player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 14);
+        } else {
+            player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 15);
+        }
     }
     if (keystates[SDL_SCANCODE_D]) {
         player->direction = RIGHT;
         dx += 1.0f;
+        if (player->currentAnimationFrame == 0) {
+            player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 10);
+        } else {
+            player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 11);
+        }
+    }
+    if (!keystates[SDL_SCANCODE_W] && !keystates[SDL_SCANCODE_S] &&
+        !keystates[SDL_SCANCODE_A] && !keystates[SDL_SCANCODE_D]) {
+        player->idle = 1;
+        if (player->direction == UP) {
+            if (player->currentAnimationFrame == 0) {
+                player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 4);
+            } else {
+                player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 5);
+            }
+        } else if (player->direction == DOWN) {
+            if (player->currentAnimationFrame == 0) {
+                player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 0);
+            } else {
+                player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 1);
+            }
+        } else if (player->direction == LEFT) {
+            if (player->currentAnimationFrame == 0) {
+                player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 12);
+            } else {
+                player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 13);
+            }
+        } else if (player->direction == RIGHT) {
+            if (player->currentAnimationFrame == 0) {
+                player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 8);
+            } else {
+                player->texture = *(SDL_Texture**)vector_get(&gPlayerTextures, 9);
+            }
+        }
+    } else {
+        player->idle = 0;
+    }
+    if (keystates[SDL_SCANCODE_O]) {
+        player->debug = !player->debug;
     }
 
     // Normalize diagonal movement
@@ -83,12 +151,13 @@ void playerUpdate(Player* player) {
     player->solidArea.x = player->rect.x + (player->rect.w - player->solidArea.w) / 2;
     player->solidArea.y = player->rect.y + (player->rect.h - player->solidArea.h);
 
-
 }
 
 
 void playerDraw(Player* player, SDL_Renderer* renderer) {
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-    SDL_RenderFillRect(renderer, &player->solidArea);
     SDL_RenderCopy(renderer, player->texture, NULL, &player->rect);
+    if (player->debug) {
+        SDL_RenderDrawRect(renderer, &player->solidArea);
+    }
 }
