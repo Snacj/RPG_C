@@ -12,9 +12,12 @@
 */
 #include "gamepanel.h"
 #include "assets.h"
-#include "config.h"
-#include "player.h"
-#include "util.h"
+#include "../config.h"
+#include "../entity/player.h"
+#include "../util/util.h"
+#include "../ui/main_menu.h"
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keycode.h>
 
 Player player;
 
@@ -28,7 +31,9 @@ SDL_Rect stoneRect = { 10*TILE_SIZE, 10*TILE_SIZE, TILE_SIZE, TILE_SIZE };
 */
 static int update(void) {
     // update the player
-    playerUpdate(&player);
+    if (gamePanel.gameState == GAME) {
+        playerUpdate(&player);
+    }
     return 0;
 }
 
@@ -39,21 +44,25 @@ static int update(void) {
 */
 static void draw(SDL_Renderer* renderer) {
     SDL_RenderClear(renderer);
-    // load the grass texture
-    SDL_Texture* texture = *(SDL_Texture**)vector_get(&gTextures, 0);
-    // go over the map and draw the grass texture
-    for(int i = 0; i < COLS; i++) {
-        for (int j = 0; j < ROWS; j++) {
-            SDL_Rect destRect = {i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
-            SDL_RenderCopy(renderer, texture, NULL, &destRect);
+    if (gamePanel.gameState == MAIN_MENU) {
+        mainMenuDraw(renderer);
+    } else if (gamePanel.gameState == GAME) {
+        // load the grass texture
+        SDL_Texture* texture = *(SDL_Texture**)vector_get(&gTextures, 0);
+        // go over the map and draw the grass texture
+        for(int i = 0; i < COLS; i++) {
+            for (int j = 0; j < ROWS; j++) {
+                SDL_Rect destRect = {i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                SDL_RenderCopy(renderer, texture, NULL, &destRect);
+            }
         }
+        // load the stone texture
+        texture = *(SDL_Texture**)vector_get(&gTextures, 2);
+        // draw the stone texture
+        SDL_RenderCopy(renderer, texture, NULL, &stoneRect);
+        // draw the player
+        playerDraw(&player, renderer);
     }
-    // load the stone texture
-    texture = *(SDL_Texture**)vector_get(&gTextures, 2);
-    // draw the stone texture
-    SDL_RenderCopy(renderer, texture, NULL, &stoneRect);
-    // draw the player
-    playerDraw(&player, renderer);
     // render the textures on the Screen
     SDL_RenderPresent(renderer);
 }
@@ -64,22 +73,31 @@ static void draw(SDL_Renderer* renderer) {
 * @return void
 */
 void gamePanelLoop(SDL_Window* window, SDL_Renderer* renderer) {
-    int quit = 0;
     SDL_Event e;
     playerInit(&player);
+    init_main_menu(renderer);
+    gamePanel.gameState = MAIN_MENU;
+    gamePanel.running = 1;
 
-    while (!quit) {
+    while (gamePanel.running) {
         // Set the frame delay
         Uint32 frameStart = SDL_GetTicks();
 
         // Handle events
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
-                quit = 1;
+                gamePanel.running = 0;
             }
-            if (e.key.keysym.sym == SDLK_ESCAPE) {
-                quit = 1;
+            switch ( e.key.keysym.sym ) {
+                case SDLK_ESCAPE:
+                    if (gamePanel.gameState == GAME) gamePanel.gameState = MAIN_MENU;
+                    break;
+                default:
+                    break;
             } 
+            if (gamePanel.gameState == MAIN_MENU) {
+                handle_main_menu_events(&e);
+            }
         }
         // Update the game state
         update();

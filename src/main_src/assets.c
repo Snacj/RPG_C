@@ -7,7 +7,7 @@
 */
 
 #include "assets.h"
-#include "util.h"
+#include "../util/util.h"
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 
@@ -61,6 +61,9 @@ int loadAssets(SDL_Renderer* renderer) {
         { "grass",          "assets/sprites/grass.png"},
         { "plain_grass",    "assets/sprites/testing.png"},
         { "stone",          "assets/sprites/stone.png"},
+        { "background",          "assets/sprites/background.png"},
+        { "start_game_button",          "assets/sprites/start_game_button.png"},
+        { "quit_game_button",          "assets/sprites/quit_game_button.png"},
     };
 
     // Array size

@@ -5,9 +5,9 @@
  *
  */
 #include "player.h"
-#include "config.h"
-#include "assets.h"
-#include "collisionchecker.h"
+#include "../config.h"
+#include "../main_src/assets.h"
+#include "../main_src/collisionchecker.h"
 
 SDL_Rect stoneRect1 = { 10*TILE_SIZE, 10*TILE_SIZE, TILE_SIZE, TILE_SIZE };
 

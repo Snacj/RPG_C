@@ -5,7 +5,7 @@
 *
 */
 #include "collisionchecker.h"
-#include "player.h"
+#include "../entity/player.h"
 
 #include <SDL2/SDL.h>
 

@@ -1,16 +1,20 @@
 # Directories
-SRC_DIR = src
-OBJ_DIR = build
+SRC_DIR := src
+OBJ_DIR := build
 
-# Files
-SRCS := $(wildcard $(SRC_DIR)/*.c)
+# Find all .c files under src/ recursively
+SRCS := $(shell find $(SRC_DIR) -name '*.c')
+
+# Create corresponding object files in build/, maintaining structure
 OBJS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 DEPS := $(OBJS:.o=.d)
+
+# Output binary
 OBJ_NAME = main
 
-# Compiler
+# Compiler and flags
 CC = gcc
-CFLAGS = -std=c11 -Wall -I$(SRC_DIR) -MMD -MP
+CFLAGS = -std=c11 -Wall -MMD -MP $(addprefix -I, $(shell find $(SRC_DIR) -type d))
 LDFLAGS = `sdl2-config --libs` -lSDL2_image
 
 # Targets
@@ -18,19 +22,20 @@ all: $(OBJ_NAME)
 	@echo "Running program..."
 	./$(OBJ_NAME)
 
+# Link object files into final executable
 $(OBJ_NAME): $(OBJS)
 	@echo "Linking..."
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-# Compile .c to .o and generate .d dependency files
+# Compile each .c to matching .o in build/
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean
+# Clean build and binary
 clean:
 	rm -rf $(OBJ_NAME) $(OBJ_DIR)
 
-# Include auto-generated dependency files
+# Include dependency files
 -include $(DEPS)
 

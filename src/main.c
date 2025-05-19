@@ -9,8 +9,8 @@
 #include <SDL2/SDL_video.h>
 #include <stdio.h>
 
-#include "assets.h"
-#include "gamepanel.h"
+#include "main_src/assets.h"
+#include "main_src/gamepanel.h"
 #include "config.h"
 
 
@@ -29,7 +29,7 @@ int init_game() {
         return EXIT_SUCCESS;
     }
 
-    if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
+    if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest")) {
         printf("Warning: Linear texture filtering not enabled!\n");
     }
 
@@ -37,7 +37,7 @@ int init_game() {
     gWindow = SDL_CreateWindow("2D Game",
                                SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                WINDOW_WIDTH, WINDOW_HEIGHT,
-                               SDL_WINDOW_SHOWN);
+                               SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS);
     if (!gWindow) {
         printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
         return EXIT_SUCCESS;

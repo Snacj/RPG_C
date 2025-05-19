@@ -1,6 +1,6 @@
 #pragma once
 #include <SDL2/SDL.h>
-#include "util.h"
+#include "../util/util.h"
 
 extern Vector gTextures;
 extern Vector gPlayerTextures;
