@@ -16,6 +16,8 @@
 #include "../entity/player.h"
 #include "../util/util.h"
 #include "../ui/main_menu.h"
+#include "../tiles/tiles.h"
+
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_keycode.h>
 
@@ -48,18 +50,19 @@ static void draw(SDL_Renderer* renderer) {
         mainMenuDraw(renderer);
     } else if (gamePanel.gameState == GAME) {
         // load the grass texture
-        SDL_Texture* texture = *(SDL_Texture**)vector_get(&gTextures, 0);
+        
         // go over the map and draw the grass texture
-        for(int i = 0; i < COLS; i++) {
-            for (int j = 0; j < ROWS; j++) {
+        // TODO: draw the map based on the map array
+        for(int i = 0; i < MAP_COLS; i++) {
+            for (int j = 0; j < MAP_ROWS; j++) {
                 SDL_Rect destRect = {i * TILE_SIZE, j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
-                SDL_RenderCopy(renderer, texture, NULL, &destRect);
+                SDL_RenderCopy(renderer, *(SDL_Texture**)vector_get(&gTextures, MAP[j][i]), NULL, &destRect);
             }
         }
         // load the stone texture
-        texture = *(SDL_Texture**)vector_get(&gTextures, 2);
+        
         // draw the stone texture
-        SDL_RenderCopy(renderer, texture, NULL, &stoneRect);
+        SDL_RenderCopy(renderer, *(SDL_Texture**)vector_get(&gTextures, 2), NULL, &stoneRect);
         // draw the player
         playerDraw(&player, renderer);
     }
@@ -76,6 +79,8 @@ void gamePanelLoop(SDL_Window* window, SDL_Renderer* renderer) {
     SDL_Event e;
     playerInit(&player);
     init_main_menu(renderer);
+    // load the map into array
+    readMap("assets/maps/map.txt");
     gamePanel.gameState = MAIN_MENU;
     gamePanel.running = 1;
 

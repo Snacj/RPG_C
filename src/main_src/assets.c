@@ -64,6 +64,7 @@ int loadAssets(SDL_Renderer* renderer) {
         { "background",          "assets/sprites/background.png"},
         { "start_game_button",          "assets/sprites/start_game_button.png"},
         { "quit_game_button",          "assets/sprites/quit_game_button.png"},
+        { "dirt",          "assets/sprites/dirt.png"},
     };
 
     // Array size
